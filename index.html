@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Idepro — Gerador de Ideias de Negócios</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --indigo: #4f46e5;
+    --indigo-dark: #4338ca;
+    --indigo-light: #eef2ff;
+    --indigo-text: #3730a3;
+    --slate-900: #0f172a;
+    --slate-800: #1e293b;
+    --slate-700: #334155;
+    --slate-600: #475569;
+    --slate-500: #64748b;
+    --slate-400: #94a3b8;
+    --slate-300: #cbd5e1;
+    --slate-200: #e2e8f0;
+    --slate-100: #f1f5f9;
+    --slate-50: #f8fafc;
+    --white: #ffffff;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --shadow-xl: 0 20px 25px -5px rgba(0,0,0,.10), 0 8px 10px -6px rgba(0,0,0,.10);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--slate-50);
+    color: var(--slate-900);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* ── Header ── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--white);
+    border-bottom: 1px solid var(--slate-200);
+    box-shadow: var(--shadow-sm);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; height: 64px;
+  }
+  @media(max-width:480px){ header { padding: 0 1rem; height: 56px; } }
+  .logo-wrap { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+  .logo-box {
+    padding: 0 14px; height: 40px; background: var(--indigo);
+    border-radius: 12px; display: flex; align-items: center;
+  }
+  .logo-box span { color: #fff; font-weight: 900; font-size: 17px; letter-spacing: -0.5px; }
+  .logo-text h1 { font-size: 18px; font-weight: 700; color: var(--slate-800); letter-spacing: -0.3px; }
+  .logo-text p { font-size: 10px; color: var(--indigo); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  @media(max-width:480px){ .logo-text { display: none; } }
+
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .lang-select {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+    color: var(--slate-400); background: transparent; border: none; outline: none; cursor: pointer;
+    font-family: inherit;
+  }
+  .lang-select:hover { color: var(--indigo); }
+  .menu-btn {
+    width: 40px; height: 40px; border-radius: var(--radius-sm); border: none;
+    background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--slate-600); transition: background .15s;
+  }
+  .menu-btn:hover { background: var(--slate-100); }
+  .menu-btn svg { width: 22px; height: 22px; }
+
+  /* ── Main ── */
+  main { max-width: 1100px; margin: 0 auto; padding: 104px 1rem 6rem; }
+  @media(max-width:480px){ main { padding: 80px 0.75rem 5rem; } }
+
+  /* ── Hero ── */
+  #hero { text-align: center; margin-bottom: 3.5rem; }
+  #hero h2 {
+    font-size: clamp(1.6rem, 5vw, 3.2rem); font-weight: 900;
+    line-height: 1.1; letter-spacing: -1px; color: var(--slate-900); margin-bottom: 1rem;
+  }
+  #hero p { font-size: .95rem; color: var(--slate-500); max-width: 480px; margin: 0 auto 1.25rem; line-height: 1.6; }
+  @media(max-width:480px){
+    #hero { margin-bottom: 2rem; }
+    #hero h2 { font-size: 1.6rem; letter-spacing: -.5px; }
+    #hero p { font-size: .875rem; }
+  }
+  .badge-remaining {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--indigo-light); color: var(--indigo-text);
+    border: 1px solid #c7d2fe; border-radius: 999px;
+    font-size: 12px; font-weight: 600; padding: 4px 14px;
+  }
+
+  /* ── Form Card ── */
+  .form-card {
+    max-width: 680px; margin: 0 auto 3rem;
+    background: var(--white); border: 1px solid var(--slate-200);
+    border-radius: var(--radius-xl); box-shadow: var(--shadow-xl); padding: 2rem;
+  }
+  @media(max-width:480px){
+    .form-card { padding: 1.25rem 1rem; border-radius: var(--radius-lg); margin-bottom: 2rem; }
+  }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem 1.5rem; }
+  @media(max-width:540px){ .form-grid { grid-template-columns: 1fr; } }
+  .col-span-2 { grid-column: 1 / -1; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--slate-400); }
+  .field input, .field select {
+    height: 44px; padding: 0 14px; border: 1px solid var(--slate-200);
+    border-radius: var(--radius-sm); background: var(--slate-50);
+    font-size: 14px; font-family: inherit; color: var(--slate-800); outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(79,70,229,.12);
+  }
+
+  .btn-generate {
+    width: 100%; height: 48px; margin-top: 1.25rem;
+    background: var(--indigo); color: #fff;
+    border: none; border-radius: var(--radius-sm); cursor: pointer;
+    font-size: 13px; font-weight: 700; letter-spacing: .08em; font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background .15s, transform .1s, box-shadow .15s;
+    box-shadow: 0 4px 14px rgba(79,70,229,.3);
+  }
+  @media(max-width:480px){ .btn-generate { height: 52px; font-size: 14px; border-radius: 12px; } }
+  .btn-generate:hover:not(:disabled) { background: var(--indigo-dark); box-shadow: 0 6px 18px rgba(79,70,229,.4); }
+  .btn-generate:active:not(:disabled) { transform: scale(.99); }
+  .btn-generate:disabled { opacity: .45; cursor: not-allowed; }
+
+  /* ── Feature pills ── */
+  .features { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; max-width: 680px; margin: 0 auto; }
+  @media(max-width:540px){ .features { grid-template-columns: 1fr; } }
+  .feature { text-align: center; padding: 1rem; }
+  .feature-icon {
+    width: 42px; height: 42px; margin: 0 auto 14px;
+    background: var(--white); border: 1px solid var(--slate-200);
+    border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .feature-icon svg { width: 20px; height: 20px; color: var(--indigo); }
+  .feature h4 { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--slate-400); margin-bottom: 6px; }
+  .feature p { font-size: 13px; color: var(--slate-600); line-height: 1.55; }
+
+  /* ── Loading ── */
+  #loading { display: none; text-align: center; padding: 4rem 1rem; }
+  .spinner {
+    width: 36px; height: 36px; border-radius: 50%; margin: 0 auto 1.25rem;
+    border: 4px solid rgba(79,70,229,.15); border-top-color: var(--indigo);
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #loading h3 { font-size: 16px; font-weight: 700; color: var(--indigo-text); margin-bottom: 4px; }
+  #loading p { font-size: 13px; color: var(--slate-500); }
+
+  /* ── Results ── */
+  #results { display: none; }
+  .results-header {
+    background: #1e1b4b; color: #fff;
+    border-radius: var(--radius-xl); padding: 2rem 2.5rem; margin-bottom: 2.5rem;
+  }
+  @media(max-width:480px){ .results-header { padding: 1.25rem 1.1rem; margin-bottom: 1.5rem; border-radius: var(--radius-lg); } }
+  .results-header h2 { font-size: 1.75rem; font-weight: 700; margin-bottom: 4px; }
+  @media(max-width:480px){ .results-header h2 { font-size: 1.25rem; } }
+  .results-header p { font-size: 13px; color: #a5b4fc; max-width: 500px; }
+  .btn-refine {
+    display: inline-flex; align-items: center; gap: 6px; margin-bottom: 1.5rem;
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+    color: var(--slate-500); background: none; border: none; cursor: pointer; font-family: inherit;
+    transition: color .15s;
+  }
+  .btn-refine:hover { color: var(--indigo); }
+  .btn-refine svg { width: 13px; height: 13px; }
+
+  /* ── Idea Card ── */
+  .ideas-list { display: flex; flex-direction: column; gap: 2rem; }
+  .idea-card {
+    background: var(--white); border: 1px solid var(--slate-200);
+    border-radius: var(--radius-xl); box-shadow: var(--shadow-xl);
+    overflow: hidden; display: flex; flex-direction: row;
+  }
+  @media(max-width:700px){ .idea-card { flex-direction: column; } }
+
+  .idea-sidebar {
+    width: 260px; flex-shrink: 0; background: var(--slate-50);
+    border-right: 1px solid var(--slate-100);
+    padding: 2rem; display: flex; flex-direction: column;
+  }
+  @media(max-width:700px){ .idea-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--slate-100); padding: 1.25rem 1rem; } }
+  @media(max-width:480px){ .idea-meta { flex-direction: row; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; } }
+  .idea-num { font-size: 11px; font-family: monospace; color: var(--slate-400); margin-bottom: 12px; }
+  .idea-title { font-size: 1.3rem; font-weight: 700; color: var(--slate-900); line-height: 1.25; margin-bottom: 1.5rem; }
+  .idea-meta { margin-top: auto; display: flex; flex-direction: column; gap: 1rem; }
+  .meta-item label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--slate-400); display: block; margin-bottom: 4px; }
+  .badge {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    padding: 3px 12px; border-radius: 999px; border: 1px solid var(--slate-200); background: var(--white); color: var(--slate-700);
+  }
+  .badge-facil { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+  .badge-medio { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+  .badge-dificil { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+
+  .idea-body { flex: 1; padding: 2rem; overflow-y: auto; max-height: 620px; display: flex; flex-direction: column; gap: 1.5rem; }
+  @media(max-width:700px){ .idea-body { padding: 1.25rem 1rem; max-height: none; } }
+
+  .section-title { font-size: 15px; font-weight: 700; color: var(--slate-900); display: flex; align-items: center; gap: 8px; margin-bottom: .5rem; }
+  .section-title svg { width: 18px; height: 18px; color: var(--indigo); flex-shrink: 0; }
+  .section-text { font-size: 13px; color: var(--slate-600); line-height: 1.65; }
+
+  .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media(max-width:540px){ .details-grid { grid-template-columns: 1fr; } }
+  .detail-box { background: #eef2ff; border-radius: var(--radius-sm); padding: 1rem 1.1rem; }
+  .detail-box .section-title { color: var(--indigo-text); }
+  .detail-box .section-text { color: var(--slate-600); }
+
+  .steps-list { padding-left: 1.2rem; display: flex; flex-direction: column; gap: 6px; }
+  .steps-list li { font-size: 13px; color: var(--slate-700); line-height: 1.55; }
+
+  .social-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .social-chip {
+    font-size: 12px; font-weight: 600; padding: 4px 14px; border-radius: 999px;
+    background: #dbeafe; color: #1d4ed8; display: flex; align-items: center; gap: 5px;
+  }
+
+  .card-actions { display: flex; flex-wrap: wrap; gap: .75rem; padding-top: .5rem; border-top: 1px solid var(--slate-100); }
+  .btn-action {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 38px; padding: 0 16px; border-radius: var(--radius-sm);
+    font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer;
+    border: 1px solid transparent; transition: all .15s;
+  }
+  .btn-action svg { width: 15px; height: 15px; }
+  .btn-action.primary { background: var(--indigo); color: #fff; }
+  .btn-action.primary:hover { background: var(--indigo-dark); }
+  .btn-action.outline { background: #fff; color: var(--slate-700); border-color: var(--slate-200); }
+  .btn-action.outline:hover { border-color: var(--slate-400); background: var(--slate-50); }
+  .btn-action.ghost { background: transparent; color: var(--slate-500); border-color: transparent; }
+  .btn-action.ghost:hover { background: var(--indigo-light); color: var(--indigo); }
+
+  /* ── Error ── */
+  #error-box {
+    display: none; max-width: 480px; margin: 4rem auto; text-align: center;
+    background: var(--white); border: 1px solid var(--slate-200);
+    border-radius: var(--radius-xl); padding: 3rem; box-shadow: var(--shadow-xl);
+  }
+  #error-box svg { width: 48px; height: 48px; color: var(--red); margin-bottom: 1rem; }
+  #error-box h3 { font-size: 18px; font-weight: 700; color: var(--slate-900); margin-bottom: 8px; }
+  #error-box p { font-size: 14px; color: var(--slate-500); margin-bottom: 1.5rem; }
+  .btn-retry {
+    background: var(--indigo); color: #fff; border: none; border-radius: var(--radius-sm);
+    padding: 10px 28px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  .btn-retry:hover { background: var(--indigo-dark); }
+
+  /* ── Drawer / Menu ── */
+  #drawer-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: 200;
+  }
+  #drawer-overlay.open { display: block; }
+  #drawer {
+    position: fixed; top: 0; right: -400px; bottom: 0; width: 360px; max-width: 90vw;
+    background: var(--white); border-left: 1px solid var(--slate-200);
+    z-index: 201; padding: 2rem 1.5rem; overflow-y: auto;
+    transition: right .28s cubic-bezier(.4,0,.2,1);
+    display: flex; flex-direction: column; gap: 1.5rem;
+  }
+  #drawer.open { right: 0; }
+  .drawer-close {
+    position: absolute; top: 1rem; right: 1rem;
+    width: 36px; height: 36px; border-radius: var(--radius-sm); border: 1px solid var(--slate-200);
+    background: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--slate-500);
+  }
+  .drawer-close svg { width: 18px; height: 18px; }
+  .drawer-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--slate-400); margin-bottom: 10px; }
+  .plan-box { background: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-sm); padding: 1rem; }
+  .plan-box-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .plan-box-head span { font-size: 14px; font-weight: 600; color: var(--slate-700); }
+  .badge-free { background: var(--white); color: var(--slate-500); border: 1px solid var(--slate-200); font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
+  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
+  .plan-features li { font-size: 11px; color: var(--slate-600); display: flex; align-items: center; gap: 7px; }
+  .plan-features li svg { width: 12px; height: 12px; color: var(--amber); flex-shrink: 0; }
+  .btn-upgrade {
+    width: 100%; height: 38px; background: var(--indigo); color: #fff;
+    border: none; border-radius: var(--radius-sm); font-size: 12px; font-weight: 700;
+    cursor: pointer; font-family: inherit; margin-top: 10px;
+  }
+  .btn-upgrade:hover { background: var(--indigo-dark); }
+  .hr { border: none; border-top: 1px solid var(--slate-200); }
+  .themes-list { display: flex; flex-direction: column; gap: 10px; }
+  .theme-btn {
+    display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+    border-radius: var(--radius-sm); border: 1px solid var(--slate-100);
+    background: none; cursor: pointer; font-family: inherit; text-align: left; transition: all .15s;
+  }
+  .theme-btn.active { border-color: var(--indigo); box-shadow: 0 0 0 2px #c7d2fe; background: var(--indigo-light); }
+  .theme-dots { display: flex; }
+  .theme-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; margin-right: -8px; }
+  .theme-btn span { font-size: 12px; font-weight: 600; color: var(--slate-700); }
+  .theme-btn.active span { color: var(--indigo); }
+  .about-item { display: flex; align-items: flex-start; gap: 10px; }
+  .about-item svg { width: 16px; height: 16px; color: var(--indigo); flex-shrink: 0; margin-top: 2px; }
+  .about-item-title { font-size: 13px; font-weight: 700; color: var(--slate-800); }
+  .about-item-text { font-size: 11px; color: var(--slate-500); line-height: 1.55; margin-top: 2px; }
+  .drawer-footer { margin-top: auto; text-align: center; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--slate-400); }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--slate-200); background: var(--white);
+    padding: 1.5rem 2rem; display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem; margin-top: 4rem;
+  }
+  .footer-status { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--slate-400); }
+  .dot-green { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse-green 1.5s infinite; }
+  @keyframes pulse-green { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .footer-copy { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--slate-400); }
+
+  /* api-key-wrap removed */
+  body.theme-olive header { background: #f5f5f0; border-color: #deded6; }
+  body.theme-olive .btn-generate, body.theme-olive .btn-action.primary, body.theme-olive .btn-upgrade { background: #5A5A40; }
+  body.theme-olive .btn-generate:hover, body.theme-olive .btn-action.primary:hover, body.theme-olive .btn-upgrade:hover { background: #484830; }
+  body.theme-olive .results-header { background: #3a3a2a; }
+  body.theme-midnight { background: #0f172a; color: #e2e8f0; }
+  body.theme-midnight header { background: #1e1b4b; border-color: #312e81; }
+  body.theme-midnight .form-card, body.theme-midnight .idea-card, body.theme-midnight footer { background: #1e1b4b; border-color: #312e81; }
+  body.theme-midnight .idea-sidebar { background: #16134a; border-color: #312e81; }
+  body.theme-midnight .field input, body.theme-midnight .field select { background: #13103a; border-color: #3730a3; color: #e2e8f0; }
+</style>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4f46e5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Idepro">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo-wrap" onclick="showForm()">
+    <div class="logo-box"><span>IDEPRO</span></div>
+    <div class="logo-text">
+      <h1>Idepro</h1>
+      <p>Makina Company</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <select class="lang-select" id="langSelect" onchange="setLang(this.value)">
+      <option value="pt">PT</option>
+      <option value="en">EN</option>
+      <option value="es">ES</option>
+      <option value="fr">FR</option>
+    </select>
+    <button class="menu-btn" onclick="openDrawer()" aria-label="Menu">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- Main -->
+<main>
+
+  <!-- Form view -->
+  <div id="formView">
+    <div id="hero">
+      <h2 id="heroTitle">Sua liberdade financeira começa com uma ideia.</h2>
+      <p id="heroSubtitle">Preencha seu perfil para que nossa IA gere oportunidades personalizadas para o seu bolso e tempo.</p>
+      <span class="badge-remaining" id="remainingBadge">Ideias restantes hoje: <strong id="remainingCount">10</strong></span>
+    </div>
+
+    <div class="form-card">
+      <div class="form-grid">
+        <div class="field">
+          <label id="lblPais">📍 País ou Realidade</label>
+          <input type="text" id="fieldPais" placeholder="Ex: Brasil, Angola..." value="Brasil" />
+        </div>
+        <div class="field">
+          <label id="lblInvestimento">💰 Investimento</label>
+          <select id="fieldInvestimento">
+            <option value="R$ 0 (Começar com o que tem)">R$ 0 / $ 0</option>
+            <option value="Até R$ 100 / $ 20" selected>Até R$ 100 / $ 20</option>
+            <option value="Até R$ 500 / $ 100">Até R$ 500 / $ 100</option>
+            <option value="Até R$ 2.000 / $ 400">Até R$ 2.000 / $ 400</option>
+            <option value="Acima de R$ 5.000 / $ 1000">Acima de R$ 5.000 / $ 1000</option>
+          </select>
+        </div>
+        <div class="field">
+          <label id="lblDisponibilidade">⌛ Disponibilidade</label>
+          <select id="fieldDisponibilidade">
+            <option value="Parcial">Part-Time</option>
+            <option value="Tempo Inteiro">Full-Time</option>
+          </select>
+        </div>
+        <div class="field">
+          <label id="lblHabilidades">🛠️ Habilidades</label>
+          <input type="text" id="fieldHabilidades" placeholder="Ex: Vendas, Design..." />
+        </div>
+        <div class="field">
+          <label id="lblNivel">📚 Nível de Detalhe</label>
+          <select id="fieldNivel">
+            <option value="Resumido">Resumido</option>
+            <option value="Completo" selected>Completo</option>
+            <option value="Extenso (Plano de Negócios)">Extenso (Plano de Negócios)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label id="lblIdioma">🌐 Idioma da Resposta</label>
+          <select id="fieldIdioma">
+            <option value="Português" selected>Português</option>
+            <option value="English">English</option>
+            <option value="Español">Español</option>
+            <option value="Français">Français</option>
+          </select>
+        </div>
+      </div>
+
+
+
+      <button class="btn-generate" id="generateBtn" onclick="generate()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span id="generateBtnText">GERAR OPORTUNIDADES</span>
+      </button>
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+        </div>
+        <h4>Prático</h4>
+        <p>Gerencie tudo pelo seu smartphone sem complicações.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <h4>Realista</h4>
+        <p>Oportunidades mapeadas para o seu contexto e orçamento.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        </div>
+        <h4>Escalável</h4>
+        <p>Cresça através do WhatsApp, Instagram e Google Maps.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <h3>Analisando Oportunidades...</h3>
+    <p>Nossa IA está cruzando dados de mercado com seu contexto.</p>
+  </div>
+
+  <!-- Error -->
+  <div id="error-box">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <h3>Algo deu errado</h3>
+    <p id="errorMsg">Não foi possível gerar as ideias. Tente novamente.</p>
+    <button class="btn-retry" onclick="showForm()">Tentar Novamente</button>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+    <div class="results-header">
+      <h2>Planos Gerados</h2>
+      <p>Seus modelos de negócio detalhados estão prontos para exportação.</p>
+    </div>
+    <button class="btn-refine" onclick="showForm()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      Refinar Filtros
+    </button>
+    <div class="ideas-list" id="ideasList"></div>
+  </div>
+
+</main>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-status"><span class="dot-green"></span><span>Oportunidades Disponíveis</span></div>
+  <p class="footer-copy">© 2026 Makina Company • Inteligência de Negócios</p>
+</footer>
+
+<!-- Drawer Overlay -->
+<div id="drawer-overlay" onclick="closeDrawer()"></div>
+
+<!-- Drawer -->
+<div id="drawer">
+  <button class="drawer-close" onclick="closeDrawer()">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <div>
+    <h2 style="font-size:22px;font-weight:700;color:var(--slate-800);">Menu</h2>
+    <p style="font-size:13px;color:var(--slate-500);margin-top:4px;">Preencha seu perfil para gerar oportunidades.</p>
+  </div>
+
+  <!-- Plan -->
+  <div>
+    <div class="drawer-section-title">Assinatura</div>
+    <div class="plan-box">
+      <div class="plan-box-head">
+        <span>Plano Atual</span>
+        <span class="badge-free">FREE</span>
+      </div>
+      <p style="font-size:11px;color:var(--slate-500);">No plano PRO você tem:</p>
+      <ul class="plan-features">
+        <li><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Ideias ilimitadas</li>
+        <li><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Exportação HD</li>
+        <li><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Análise de ROI</li>
+        <li><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Suporte 24/7</li>
+      </ul>
+      <button class="btn-upgrade">Mudar para o PRO</button>
+    </div>
+  </div>
+
+  <hr class="hr" />
+
+  <!-- Themes -->
+  <div>
+    <div class="drawer-section-title">Personalização</div>
+    <div class="themes-list">
+      <button class="theme-btn active" id="themeDefault" onclick="setTheme('default',this)">
+        <div class="theme-dots">
+          <div class="theme-dot" style="background:#4f46e5;"></div>
+          <div class="theme-dot" style="background:#f8fafc;"></div>
+        </div>
+        <span>Sleek (Default)</span>
+      </button>
+      <button class="theme-btn" id="themeOlive" onclick="setTheme('theme-olive',this)">
+        <div class="theme-dots">
+          <div class="theme-dot" style="background:#5A5A40;"></div>
+          <div class="theme-dot" style="background:#f5f5f0;"></div>
+        </div>
+        <span>Modern Olive</span>
+      </button>
+      <button class="theme-btn" id="themeMidnight" onclick="setTheme('theme-midnight',this)">
+        <div class="theme-dots">
+          <div class="theme-dot" style="background:#1e1b4b;"></div>
+          <div class="theme-dot" style="background:#0f172a;"></div>
+        </div>
+        <span>Midnight Pro</span>
+      </button>
+    </div>
+  </div>
+
+  <hr class="hr" />
+
+  <!-- About -->
+  <div>
+    <div class="drawer-section-title">Sobre o App</div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="about-item">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div>
+          <div class="about-item-title">Finalidade</div>
+          <div class="about-item-text">O Idepro é um motor de geração de negócios via IA, treinado para encontrar oportunidades reais com baixo capital.</div>
+        </div>
+      </div>
+      <div class="about-item">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <div>
+          <div class="about-item-title">Versão</div>
+          <div class="about-item-text">1.5.0</div>
+        </div>
+      </div>
+      <div class="about-item">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <div>
+          <div class="about-item-title">Desenvolvedor</div>
+          <div class="about-item-text" style="font-weight:700;color:var(--slate-700);">Makina Company</div>
+          <div class="about-item-text" style="font-style:italic;">"Transformando código em soluções reais para pequenos empreendedores."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer-footer">© 2026 Makina Company.</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+let remaining = 10;
+let currentLang = 'pt';
+
+const T = {
+  pt: {
+    heroTitle: 'Sua liberdade financeira começa com uma ideia.',
+    heroSubtitle: 'Preencha seu perfil para que nossa IA gere oportunidades personalizadas para o seu bolso e tempo.',
+    remaining: 'Ideias restantes hoje: ',
+    generate: 'GERAR OPORTUNIDADES',
+    generating: 'Processando Contexto...',
+    retry: 'Tentar Novamente',
+    refine: 'Refinar Filtros',
+    limitReached: 'Limite Diário Atingido',
+    downloadPdf: 'Baixar PDF',
+    downloadDoc: 'Baixar DOC',
+    share: 'Compartilhar',
+    copied: 'Copiado!',
+    lblPais: '📍 País ou Realidade',
+    lblInvestimento: '💰 Investimento',
+    lblDisponibilidade: '⌛ Disponibilidade',
+    lblHabilidades: '🛠️ Habilidades',
+    lblNivel: '📚 Nível de Detalhe',
+    lblIdioma: '🌐 Idioma da Resposta',
+    phPais: 'Ex: Brasil, Angola...',
+    phHabilidades: 'Ex: Vendas, Design...',
+  },
+  en: {
+    heroTitle: 'Your financial freedom starts with an idea.',
+    heroSubtitle: 'Fill in your profile so our AI can generate custom opportunities for your budget and time.',
+    remaining: 'Remaining ideas today: ',
+    generate: 'GENERATE OPPORTUNITIES',
+    generating: 'Processing Context...',
+    retry: 'Try Again',
+    refine: 'Refine Filters',
+    limitReached: 'Daily Limit Reached',
+    downloadPdf: 'Download PDF',
+    downloadDoc: 'Download DOC',
+    share: 'Share',
+    copied: 'Copied!',
+    lblPais: '📍 Country or Reality',
+    lblInvestimento: '💰 Investment',
+    lblDisponibilidade: '⌛ Availability',
+    lblHabilidades: '🛠️ Skills',
+    lblNivel: '📚 Detail Level',
+    lblIdioma: '🌐 Response Language',
+    phPais: 'Ex: USA, UK...',
+    phHabilidades: 'Ex: Sales, Design...',
+  },
+  es: {
+    heroTitle: 'Tu libertad financiera empieza con una idea.',
+    heroSubtitle: 'Completa tu perfil para que nuestra IA genere oportunidades personalizadas para tu bolsillo y tiempo.',
+    remaining: 'Ideas restantes hoy: ',
+    generate: 'GENERAR OPORTUNIDADES',
+    generating: 'Procesando Contexto...',
+    retry: 'Intentar de Nuevo',
+    refine: 'Refinar Filtros',
+    limitReached: 'Límite Diario Alcanzado',
+    downloadPdf: 'Descargar PDF',
+    downloadDoc: 'Descargar DOC',
+    share: 'Compartir',
+    copied: '¡Copiado!',
+    lblPais: '📍 País o Realidad',
+    lblInvestimento: '💰 Inversión',
+    lblDisponibilidade: '⌛ Disponibilidad',
+    lblHabilidades: '🛠️ Habilidades',
+    lblNivel: '📚 Nivel de Detalle',
+    lblIdioma: '🌐 Idioma de Respuesta',
+    phPais: 'Ej: México, España...',
+    phHabilidades: 'Ej: Ventas, Diseño...',
+  },
+  fr: {
+    heroTitle: 'Votre liberté financière commence par une idée.',
+    heroSubtitle: 'Remplissez votre profil pour que notre IA génère des opportunités personnalisées selon votre budget.',
+    remaining: 'Idées restantes aujourd\'hui: ',
+    generate: 'GÉNÉRER DES OPPORTUNITÉS',
+    generating: 'Traitement en cours...',
+    retry: 'Réessayer',
+    refine: 'Affiner les filtres',
+    limitReached: 'Limite quotidienne atteinte',
+    downloadPdf: 'Télécharger PDF',
+    downloadDoc: 'Télécharger DOC',
+    share: 'Partager',
+    copied: 'Copié !',
+    lblPais: '📍 Pays ou Réalité',
+    lblInvestimento: '💰 Investissement',
+    lblDisponibilidade: '⌛ Disponibilité',
+    lblHabilidades: '🛠️ Compétences',
+    lblNivel: '📚 Niveau de Détail',
+    lblIdioma: '🌐 Langue de Réponse',
+    phPais: 'Ex: France, Canada...',
+    phHabilidades: 'Ex: Ventes, Design...',
+  }
+};
+
+// ── Init ──
+(function init() {
+  const today = new Date().toISOString().split('T')[0];
+  const storedDate = localStorage.getItem('idepro_date');
+  const storedCount = localStorage.getItem('idepro_count');
+  const storedTheme = localStorage.getItem('idepro_theme') || 'default';
+
+  if (storedDate !== today) {
+    localStorage.setItem('idepro_date', today);
+    localStorage.setItem('idepro_count', '10');
+    remaining = 10;
+  } else {
+    remaining = parseInt(storedCount || '10');
+  }
+
+  document.getElementById('remainingCount').textContent = remaining;
+  if (remaining <= 0) {
+    document.getElementById('generateBtn').disabled = true;
+    document.getElementById('generateBtnText').textContent = T[currentLang].limitReached;
+  }
+
+  applyTheme(storedTheme, true);
+})();
+
+function setLang(lang) {
+  currentLang = lang;
+  const t = T[lang];
+  document.getElementById('heroTitle').textContent = t.heroTitle;
+  document.getElementById('heroSubtitle').textContent = t.heroSubtitle;
+  document.getElementById('lblPais').textContent = t.lblPais;
+  document.getElementById('lblInvestimento').textContent = t.lblInvestimento;
+  document.getElementById('lblDisponibilidade').textContent = t.lblDisponibilidade;
+  document.getElementById('lblHabilidades').textContent = t.lblHabilidades;
+  document.getElementById('lblNivel').textContent = t.lblNivel;
+  document.getElementById('lblIdioma').textContent = t.lblIdioma;
+  document.getElementById('fieldPais').placeholder = t.phPais;
+  document.getElementById('fieldHabilidades').placeholder = t.phHabilidades;
+  if (remaining > 0) document.getElementById('generateBtnText').textContent = t.generate;
+  else document.getElementById('generateBtnText').textContent = t.limitReached;
+}
+
+function applyTheme(theme, silent) {
+  document.body.className = theme === 'default' ? '' : theme;
+  localStorage.setItem('idepro_theme', theme);
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+  const map = { 'default': 'themeDefault', 'theme-olive': 'themeOlive', 'theme-midnight': 'themeMidnight' };
+  if (map[theme]) document.getElementById(map[theme]).classList.add('active');
+}
+
+function setTheme(theme, btn) {
+  applyTheme(theme);
+}
+
+function openDrawer() {
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+}
+
+function showView(viewId) {
+  ['formView','loading','results','error-box'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = id === viewId ? (id === 'formView' ? 'block' : id === 'loading' ? 'block' : 'block') : 'none';
+  });
+}
+
+function showForm() {
+  document.getElementById('formView').style.display = 'block';
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('error-box').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function generate() {
+  if (remaining <= 0) return;
+
+  const pais = document.getElementById('fieldPais').value;
+  const investimento = document.getElementById('fieldInvestimento').value;
+  const disponibilidade = document.getElementById('fieldDisponibilidade').value;
+  const habilidades = document.getElementById('fieldHabilidades').value;
+  const nivelDetalhe = document.getElementById('fieldNivel').value;
+  const idioma = document.getElementById('fieldIdioma').value;
+
+  document.getElementById('formView').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('error-box').style.display = 'none';
+
+  const prompt = `Gere exatamente 3 ideias de negócios lucrativos e realistas baseadas no seguinte contexto:
+- País/Realidade: ${pais}
+- Investimento disponível: ${investimento}
+- Disponibilidade: ${disponibilidade}
+- Habilidades: ${habilidades || 'Nenhuma habilidade específica'}
+- Nível de Detalhe Desejado: ${nivelDetalhe}
+- Idioma da Resposta: ${idioma}
+
+Para o nível "${nivelDetalhe}", forneça conteúdo extremamente rico. Se for "Extenso", inclua análises profundas de mercado, operações detalhadas e projeções financeiras. O objetivo é que cada ideia pareça um mini plano de negócios.
+
+As ideias devem ser práticas, detalhadas e adaptadas ao contexto. Priorize ideias que funcionem com pouco dinheiro e possam ser feitas com celular.
+
+IMPORTANTE: Responda TODO o conteúdo no idioma: ${idioma}.
+
+Retorne SOMENTE um array JSON válido com exatamente 3 objetos, sem nenhum texto extra, markdown ou backticks. Cada objeto deve ter:
+{
+  "nome": string,
+  "descricao": string,
+  "comoComecar": string[],
+  "investimento": string,
+  "comoGanharDinheiro": string,
+  "nivelDificuldade": "Fácil" | "Médio" | "Difícil",
+  "tempoParaResultados": string,
+  "dicaPratica": string,
+  "detalhesExtensos": {
+    "analiseMercado": string,
+    "operacoes": string,
+    "marketing": string,
+    "financeiro": string,
+    "escalabilidade": string
+  },
+  "socialMediaTips": [{"platform": string, "tip": string}]
+}`;
+
+  try {
+    const GEMINI_KEY = 'AIzaSyCWZYFEApJF1JB5jvygGI-4YvtLQczeP-8';
+    const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+
+    const response = await fetch(GEMINI_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { responseMimeType: 'application/json', temperature: 0.8, maxOutputTokens: 8192 }
+      })
+    });
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      const msg = errData?.error?.message || `Erro ${response.status}`;
+      throw new Error(msg);
+    }
+
+    const data = await response.json();
+    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const ideas = JSON.parse(clean);
+
+    remaining -= 1;
+    localStorage.setItem('idepro_count', remaining.toString());
+    document.getElementById('remainingCount').textContent = remaining;
+    if (remaining <= 0) {
+      document.getElementById('generateBtn').disabled = true;
+      document.getElementById('generateBtnText').textContent = T[currentLang].limitReached;
+    }
+
+    renderIdeas(ideas);
+  } catch (err) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error-box').style.display = 'block';
+    document.getElementById('errorMsg').textContent = err.message || 'Não foi possível gerar as ideias. Tente novamente.';
+  }
+}
+
+function badgeClass(d) {
+  if (d === 'Fácil' || d === 'Easy' || d === 'Fácil' || d === 'Facile') return 'badge-facil';
+  if (d === 'Difícil' || d === 'Hard' || d === 'Difficile') return 'badge-dificil';
+  return 'badge-medio';
+}
+
+const socialIcons = {
+  'WhatsApp': '💬', 'Instagram': '📸', 'TikTok': '🎵',
+  'Facebook': '📘', 'YouTube': '▶️', 'Telegram': '✈️', 'Twitter': '🐦', 'X': '✖️'
+};
+
+function renderIdeas(ideas) {
+  const t = T[currentLang];
+  const list = document.getElementById('ideasList');
+  list.innerHTML = ideas.map((idea, i) => `
+    <div class="idea-card">
+      <div class="idea-sidebar">
+        <span class="idea-num">#0${i+1} PRO PLAN</span>
+        <h3 class="idea-title">${esc(idea.nome)}</h3>
+        <div class="idea-meta">
+          <div class="meta-item">
+            <label>Dificuldade</label>
+            <span class="badge ${badgeClass(idea.nivelDificuldade)}">${esc(idea.nivelDificuldade)}</span>
+          </div>
+          <div class="meta-item">
+            <label>Investimento</label>
+            <span style="font-size:14px;font-weight:700;color:var(--slate-700);">${esc(idea.investimento)}</span>
+          </div>
+          <div class="meta-item">
+            <label>Retorno</label>
+            <span style="font-size:14px;font-weight:700;color:var(--indigo);">${esc(idea.tempoParaResultados)}</span>
+          </div>
+        </div>
+      </div>
+      <div class="idea-body">
+        <div>
+          <div class="section-title">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Introdução
+          </div>
+          <p class="section-text">${esc(idea.descricao)}</p>
+        </div>
+
+        <div>
+          <div class="section-title">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            Como Começar
+          </div>
+          <ol class="steps-list">${(idea.comoComecar||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
+        </div>
+
+        <div>
+          <div class="section-title">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Como Ganhar Dinheiro
+          </div>
+          <p class="section-text">${esc(idea.comoGanharDinheiro)}</p>
+        </div>
+
+        <div class="details-grid">
+          <div class="detail-box">
+            <div class="section-title">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              Mercado
+            </div>
+            <p class="section-text">${esc(idea.detalhesExtensos?.analiseMercado||'')}</p>
+          </div>
+          <div class="detail-box">
+            <div class="section-title">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
+              Marketing
+            </div>
+            <p class="section-text">${esc(idea.detalhesExtensos?.marketing||'')}</p>
+          </div>
+          <div class="detail-box">
+            <div class="section-title">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Operações
+            </div>
+            <p class="section-text">${esc(idea.detalhesExtensos?.operacoes||'')}</p>
+          </div>
+          <div class="detail-box">
+            <div class="section-title">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              Financeiro
+            </div>
+            <p class="section-text">${esc(idea.detalhesExtensos?.financeiro||'')}</p>
+          </div>
+        </div>
+
+        ${idea.socialMediaTips?.length ? `
+        <div>
+          <div class="section-title">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Redes Sociais
+          </div>
+          <div class="social-chips">
+            ${idea.socialMediaTips.map(s=>`<span class="social-chip">${socialIcons[s.platform]||'📱'} ${esc(s.platform)}</span>`).join('')}
+          </div>
+          <p class="section-text" style="margin-top:8px;">${esc(idea.socialMediaTips[0]?.tip||'')}</p>
+        </div>` : ''}
+
+        <div style="background:var(--indigo-light);border-radius:var(--radius-sm);padding:1rem;">
+          <div class="section-title" style="color:var(--indigo-text);">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Dica Prática
+          </div>
+          <p class="section-text">${esc(idea.dicaPratica)}</p>
+        </div>
+
+        <div class="card-actions">
+          <button class="btn-action primary" onclick="exportPDF(${i})">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            ${t.downloadPdf}
+          </button>
+          <button class="btn-action outline" onclick="exportDoc(${i})">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            ${t.downloadDoc}
+          </button>
+          <button class="btn-action ghost" id="shareBtn-${i}" onclick="shareIdea(${i})">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            <span id="shareLabel-${i}">${t.share}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  window._ideas = ideas;
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function esc(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function exportPDF(idx) {
+  const idea = window._ideas[idx];
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const margin = 20;
+  const pageW = doc.internal.pageSize.getWidth();
+  const maxW = pageW - margin * 2;
+  let y = margin;
+
+  function checkPage(needed) {
+    if (y + needed > doc.internal.pageSize.getHeight() - margin) {
+      doc.addPage(); y = margin;
+    }
+  }
+
+  function addTitle(text) {
+    checkPage(12);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.setTextColor(30, 27, 75);
+    const lines = doc.splitTextToSize(text, maxW);
+    doc.text(lines, margin, y);
+    y += lines.length * 9 + 4;
+  }
+
+  function addSection(label, text) {
+    checkPage(18);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(79, 70, 229);
+    doc.text(label.toUpperCase(), margin, y);
+    y += 6;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(70, 80, 100);
+    const lines = doc.splitTextToSize(String(text||''), maxW);
+    lines.forEach(line => { checkPage(6); doc.text(line, margin, y); y += 5.5; });
+    y += 4;
+  }
+
+  function addBullets(label, items) {
+    checkPage(18);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(79, 70, 229);
+    doc.text(label.toUpperCase(), margin, y);
+    y += 6;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(70, 80, 100);
+    (items||[]).forEach((item, i) => {
+      const lines = doc.splitTextToSize(`${i+1}. ${item}`, maxW - 4);
+      lines.forEach(line => { checkPage(6); doc.text(line, margin + 2, y); y += 5.5; });
+    });
+    y += 4;
+  }
+
+  // Header bar
+  doc.setFillColor(79, 70, 229);
+  doc.rect(0, 0, pageW, 14, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(255, 255, 255);
+  doc.text('IDEPRO — Gerador de Ideias de Negócios', margin, 9.5);
+  y = 24;
+
+  // Meta row
+  doc.setFillColor(238, 242, 255);
+  doc.rect(margin, y, maxW, 14, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(55, 48, 163);
+  doc.text(`Dificuldade: ${idea.nivelDificuldade}   |   Investimento: ${idea.investimento}   |   Retorno: ${idea.tempoParaResultados}`, margin + 4, y + 9);
+  y += 20;
+
+  addTitle(idea.nome);
+  addSection('Descrição', idea.descricao);
+  addBullets('Como Começar', idea.comoComecar);
+  addSection('Como Ganhar Dinheiro', idea.comoGanharDinheiro);
+  addSection('Análise de Mercado', idea.detalhesExtensos?.analiseMercado);
+  addSection('Marketing', idea.detalhesExtensos?.marketing);
+  addSection('Operações', idea.detalhesExtensos?.operacoes);
+  addSection('Financeiro', idea.detalhesExtensos?.financeiro);
+  addSection('Escalabilidade', idea.detalhesExtensos?.escalabilidade);
+  addSection('Dica Prática', idea.dicaPratica);
+
+  // Footer
+  const pages = doc.internal.getNumberOfPages();
+  for (let p = 1; p <= pages; p++) {
+    doc.setPage(p);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(148, 163, 184);
+    doc.text(`Idepro • Makina Company © 2026  |  Página ${p} de ${pages}`, margin, doc.internal.pageSize.getHeight() - 8);
+  }
+
+  doc.save(`Idepro_${idea.nome.replace(/\s+/g,'_')}.pdf`);
+}
+
+function exportDoc(idx) {
+  const idea = window._ideas[idx];
+  const content = `<html><body>
+    <h1>${idea.nome}</h1><p>${idea.descricao}</p>
+    <h2>Como Começar</h2><ol>${(idea.comoComecar||[]).map(s=>`<li>${s}</li>`).join('')}</ol>
+    <h2>Investimento</h2><p>${idea.investimento}</p>
+    <h2>Como Ganhar Dinheiro</h2><p>${idea.comoGanharDinheiro}</p>
+    <h2>Análise de Mercado</h2><p>${idea.detalhesExtensos?.analiseMercado||''}</p>
+    <h2>Marketing</h2><p>${idea.detalhesExtensos?.marketing||''}</p>
+    <h2>Operações</h2><p>${idea.detalhesExtensos?.operacoes||''}</p>
+    <h2>Financeiro</h2><p>${idea.detalhesExtensos?.financeiro||''}</p>
+    <h2>Dica Prática</h2><p>${idea.dicaPratica||''}</p>
+  
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js')
+      .then(reg => console.log('Service Worker registrado:', reg.scope))
+      .catch(err => console.log('Erro SW:', err));
+  });
+}
+</script>
+
+</body></html>`;
+  const blob = new Blob([content], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `Idepro_${idea.nome.replace(/\s+/g,'_')}.doc`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+async function shareIdea(idx) {
+  const idea = window._ideas[idx];
+  const t = T[currentLang];
+  const shareData = {
+    title: `Idepro: ${idea.nome}`,
+    text: `${idea.nome}\n\n${idea.descricao}\n\nConfira esta ideia de negócio no Idepro:`,
+    url: window.location.href,
+  };
+
+  if (navigator.share) {
+    try { await navigator.share(shareData); } catch(e) {}
+  } else {
+    try {
+      await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+      const label = document.getElementById(`shareLabel-${idx}`);
+      label.textContent = t.copied;
+      setTimeout(() => { label.textContent = t.share; }, 2000);
+    } catch(e) {}
+  }
+}
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js')
+      .then(reg => console.log('Service Worker registrado:', reg.scope))
+      .catch(err => console.log('Erro SW:', err));
+  });
+}
+</script>
+
+</body>
+</html>
